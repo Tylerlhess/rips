@@ -1,0 +1,81 @@
+<pre>
+RIP: 21
+Title: Add Pay to Asset Holder for UTXO transactions 
+Author: Tyler Hess
+Comments-Summary: No comments yet
+Comments-URI: https://github.com/RavenProject/rips
+Status: Draft
+Type: Process
+Created: 20245-05-10
+</pre>
+
+==Abstract==
+
+This RIP proposes a methodology for allowing UTXO spenditure based on the holder of a new unique asset.
+
+==Motivation==
+
+This proposes a solution to allow static address use while maintaining single use private key signatures.
+
+The reason one would like to use a static address include restricted assets, consistent deposit address for businesses and organizations, government anit-money-laundering compliance, and many others. 
+
+Another use of p2ah is to form a tiered multi-signature structure to allow broker-dealer control/estate recovery/Anti-Money-Laundering capture or any other use that is legilatively deemed nessesary for blockchain use. This would allow creation of multiredundant address access to addresses while also preserving the transparency and auditability of the blockchain. 
+
+==Current Methodology==
+
+*Bob wants to make sure his crypto and NFT's are in single use addresses.
+*Alice wants to buy one of Bob's NFTs. 
+*Bob sends Alice's new NFT to her.
+*Bob transfers all other assets to a new address to maintain single address use. 
+
+==Proposed Methodology==
+
+*Bob wants to make sure his crypto and NFT's are in single use addresses.
+*Bob creates a Signature Asset %BOBS_STATIC_ADDRESS and places his Ravencoin, NFTs, and other his other assets in the p2ah address BOBS_STATIC_ADDRESS. He then sends the %BOBS_STATIC_ADDRESS asset to a new unused address bobsUnusedP2PKH.
+*Alice has a birthday and Bob sends her a gift of the Restricted Asset alicesRestrictedAsset which she is already able to accept. Bob signes the UTXO for alicesRestrictedAsset which is in BOBS_STATIC_ADDRESS with the private key of bobsUnusedP2PKH.
+*The miner validates the UTXO is valid as bobsUnusedP2PKH address currently has the %BOBS_STATIC_ADDRESS asset.  
+*Bob has designated bobsNewUnusedP2PKH as the change address for the %BOBS_STATIC_ADDRESS asset. All of Bobs other assets still have the same UTXO pointing to p2ah BOBS_STATIC_ADDRESS.
+
+==Use Case 1==
+
+*Bob and Alice want to open a joint crypto account but maintain a single use signature policy.
+*Bob and Alice create a Signature Asset %BOB_ALICE_JOINT_CRYPTO with a 1 of 2 signing policy. Creating 2 %BOB_ALICE_JOINT_CRYPTO assets. These are sent to Bob and Alice's personal accounts.
+*Bob wants to buy groceries and uses his p2pkh UTXO for %BOB_ALICE_JOINT_CRYPTO to pay for the groceries sending %BOB_ALICE_JOINT_CRYPTO to a new p2pkh address and a new UTXO of unspent RVN back to BOB_ALICE_JOINT_CRYPTO. 
+*Alice wants to buy Bob a gift and uses her p2pkh UTXO for %BOB_ALICE_JOINT_CRYPTO to pay for the groceries. She uses the UTXO created after the grocery purchase and sending %BOB_ALICE_JOINT_CRYPTO to a new p2pkh address and a new UTXO of unspent RVN back to BOB_ALICE_JOINT_CRYPTO.
+
+==Use Case 2==
+
+*Bob wants to make sure his crypto is passed to his children upon his death.
+*Bob wants control of his account with the recoverability of it without sharing his 12 words to a single entity.
+*Bob creates 4 Signature Assets. %BOBS_STATIC_ADDRESS with a 1 of 2 policy. %BOBS_STATIC_ADDRESS/DISTRIBUTED_ACCESS with a 2 of 3 policy. %BOBS_STATIC_ADDRESS/KIDS_ACCESS with 3 of 5 policy (He has 5 kids). %BOBS_STATIC_ADDRESS/LAWYER_ACCESS with a 1 of 1 policy. 
+*Bob sends 1 of the %BOBS_STATIC_ADDRESS tokens to his own wallet and the other to BOBS_STATIC_ADDRESS/DISTRIBUTED_ACCESS.
+*Bob sends the %BOBS_STATIC_ADDRESS/DISTRIBUTED_ACCESS tokens to his wife Alice's wallet, BOBS_STATIC_ADDRESS/KIDS_ACCESS, BOBS_STATIC_ADDRESS/LAWYER_ACCESS. 
+*Bob then distributes the %BOBS_STATIC_ADDRESS/KIDS_ACCESS to his kids and %BOBS_STATIC_ADDRESS/LAWYER_ACCESS to his lawfirms static address.
+*Bob's account is now accessible by himself or a 2 of 3 commitee of his wife, his lawyer, and commitee of his kids.
+
+==Use Case 3==
+
+*A government wants to enforce AML laws. 
+*Currently they are able to impose these regulations through highly regulated financial institutions. 
+*Blockchain public ledgers traditionally have a single signature access to UTXOs.
+*This limited access prevents traditional regulatory control without surrendering your private key to an institution you don't fully trust.
+*Tiered Signature assets can fill this regulatory need the same way that restricted assets fill the regulatory needs of the SEC. 
+*By having multiple trusted third party holders needing to have consensous before the use of secondary access allows government access through the legal system. 
+
+
+==Benefits==
+* Allows the use of a static address matching the asset's name.
+* Allows alternate access to crypto assets in the event that traditional access is lost.
+* Allows the use of regulatory control to enforce court orders such as freezing assets, garnished wages, and/or asset forfitures.
+* Allows restricted asset use without publicly exposing your signature.
+
+==Downsides==
+* Requires multiple layering of multisignature assets for complete redundancy.
+* Allows the governments to mandate use of third party account access.
+
+
+==Implementation==
+
+* Build a new signature method that allows the holder of an assets private key to sign for transactions against that asset.
+* Use a new Special Character to designate Signature Assets the same as restricted assets.
+* UTXOs are assigned to the Signature Asset instead of to a script hash or public key hash.
